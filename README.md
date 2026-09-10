@@ -1,59 +1,139 @@
 # Ponthapalli Arun Kumar — Portfolio
 
-Personal portfolio site built with React + Vite + Tailwind CSS, showcasing my work in Generative AI, Python, and web development.
+Personal portfolio website built with **React + Vite + Tailwind CSS**, showcasing my work in **Generative AI, Python, Web Development, and Cybersecurity**.
 
-**Live Demo**
-https://ponthapalliarunkumar.github.io/portfolio/
+## 🌐 Live Demo
 
-> This link goes live once you deploy — see "Deploy to GitHub Pages" below. If you name your GitHub repo something other than `portfolio`, update this URL (and the `base` field in `vite.config.js`) to match.
+👉 https://ponthapalliarunkumar.github.io/ponthapalliarunkumar-arun-portfolio/
 
-## About
+## 👨‍💻 About Me
 
-- 🎓 B.Tech in Electronics and Communication Engineering, Godavari Institute of Engineering and Technology (Expected 2026)
-- 🐍 Python & Generative AI (OpenAI API) — building LLM-powered tools like an AI chatbot and text summarizer
+- 🎓 B.Tech in Electronics and Communication Engineering
+- 🏫 Godavari Institute of Engineering and Technology
+- 📅 Expected Graduation: 2026
+- 🐍 Python & Generative AI Developer
+- 🤖 Interested in AI, LLMs, RAG, AI Agents, and Automation
 - 💼 Python & AI Intern at Blackbucks and SkillDzire
-- 🔒 TryHackMe — Intro to Cyber Security certified
+- 🔒 Interested in Cybersecurity and Network Security
+- 🌐 Web Development with React and modern frontend technologies
 
-## Tech Stack
+## 🚀 Portfolio Highlights
 
-- React 19 + Vite
+This portfolio showcases my:
+
+- Generative AI projects
+- Python projects
+- AI/ML applications
+- Web development projects
+- Cybersecurity projects
+- Data analysis projects
+- Academic projects
+- Technical skills and experience
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React 19
+- Vite
 - Tailwind CSS 4
-- Framer Motion (animations)
+- HTML5
+- CSS3
+- JavaScript
 
-## Run locally
+### AI & Programming
+
+- Python
+- Generative AI
+- Large Language Models (LLMs)
+- Retrieval-Augmented Generation (RAG)
+- AI Agents
+- OpenAI API
+- Google Gemini API
+
+### Libraries & Tools
+
+- Framer Motion
+- GSAP
+- FAISS
+- Streamlit
+- Git
+- GitHub
+- VS Code
+
+## 📂 Featured Projects
+
+### 🤖 RAG Document Q&A System
+
+A Retrieval-Augmented Generation application that allows users to upload documents and ask questions based on the document content.
+
+**Technologies:**
+
+- Python
+- Streamlit
+- Google Gemini
+- FAISS
+- RAG
+
+### 🤖 AI Chatbot / Q&A Assistant
+
+An AI-powered chatbot designed to answer user questions using modern Generative AI technologies.
+
+**Technologies:**
+
+- Python
+- Generative AI
+- LLM APIs
+
+### 📝 AI Text Summarizer
+
+An AI-powered application that summarizes large text content into concise and useful information.
+
+**Technologies:**
+
+- Python
+- FastAPI
+- Generative AI
+- REST API
+
+### 🔐 Nmap Vulnerability Scanner
+
+A cybersecurity project using Nmap to perform network scanning and identify open ports and services.
+
+**Technologies:**
+
+- Kali Linux
+- Nmap
+- Networking
+- Cybersecurity
+
+### 📊 Network Traffic Analyzer
+
+A project focused on analyzing network traffic and understanding network communication.
+
+### 📈 Sales Data Analysis
+
+A data analysis project focused on extracting useful business insights from sales data.
+
+### 👥 Customer Segmentation
+
+A machine-learning/data-analysis project for grouping customers based on their characteristics and behavior.
+
+### 🎓 Student Management System
+
+A web-based application for managing student records.
+
+**Technologies:**
+
+- HTML
+- CSS
+- JavaScript
+- PHP
+- MySQL
+
+## 💻 Run Locally
+
+Clone the repository:
 
 ```bash
-npm install
-npm run dev
-```
-
-Open the printed local URL (usually `http://localhost:5173`) to preview.
-
-## Deploy to GitHub Pages (live demo link)
-
-1. Create a GitHub repo named `portfolio` under your account (or pick another name — just update `base` in `vite.config.js` and the live demo link above to match).
-2. Push this project:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial portfolio"
-   git branch -M main
-   git remote add origin https://github.com/ponthapalliarunkumar/portfolio.git
-   git push -u origin main
-   ```
-3. Add the `gh-pages` package and a deploy script if you haven't already (`npm install --save-dev gh-pages`, then in `package.json`: `"predeploy": "vite build"` and `"deploy": "gh-pages -d dist"`).
-4. Run:
-   ```bash
-   npm run deploy
-   ```
-5. On GitHub: go to your repo → **Settings → Pages** → set **Source** to "Deploy from a branch", branch `gh-pages`, folder `/ (root)`. Save.
-6. Your live site will be at:
-   ```
-   https://ponthapalliarunkumar.github.io/portfolio/
-   ```
-   (First deploy can take a minute or two to go live.)
-
-## Contact
-
-- Email: ponthapalliarun@gmail.com
-- GitHub: [github.com/ponthapalliarunkumar](https://github.com/ponthapalliarunkumar)
+git clone https://github.com/ponthapalliarunkumar/ponthapalliarunkumar-arun-portfolio.git
