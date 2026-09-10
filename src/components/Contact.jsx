@@ -1,9 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
+// 1. Go to https://formspree.io and create a free account.
+// 2. Create a new form, verify it with your email (ponthapalliarun@gmail.com).
+// 3. Copy the endpoint it gives you (looks like https://formspree.io/f/xxxxxxx)
+//    and paste it below, replacing FORM_ENDPOINT.
+const FORM_ENDPOINT = 'https://formspree.io/f/your-form-id';
+
 const Contact = () => {
   const ref = useRef(null);
-  
+
   // React Form State tracking
   const [formData, setFormData] = useState({
     firstName: '',
@@ -12,12 +18,13 @@ const Contact = () => {
     message: '',
     permission: false
   });
+  const [status, setStatus] = useState('idle'); // idle | sending | sent | error
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"]
   });
-  
+
   // Parallax translation for the big background text
   const y = useTransform(scrollYProgress, [0, 1], ["-10%", "20%"]);
 
@@ -30,8 +37,8 @@ const Contact = () => {
     }));
   };
 
-  // Handle form submission logic
-  const handleSubmit = (e) => {
+  // Handle form submission — sends via Formspree
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.permission) {
@@ -39,24 +46,37 @@ const Contact = () => {
       return;
     }
 
-    console.log("Form Data Submitted Successfully:", formData);
-    alert(`Thanks ${formData.firstName}! Message captured successfully.`);
-    
-    setFormData({ firstName: '', lastName: '', email: '', message: '', permission: false });
+    setStatus('sending');
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(e.target),
+      });
+
+      if (res.ok) {
+        setStatus('sent');
+        setFormData({ firstName: '', lastName: '', email: '', message: '', permission: false });
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
   };
 
   return (
     <section ref={ref} id="contact" className="bg-[#0b0b0b] w-full min-h-screen relative overflow-hidden flex items-end pt-32 pb-0 border-t border-white/10 select-none">
-      
+
       {/* Background Cinematic Red Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/15 rounded-full blur-[160px] pointer-events-none z-0"></div>
 
       {/* Huge Background Parallax Netflix Watermark Text */}
-      <motion.div 
+      <motion.div
         style={{ y }}
         className="absolute top-0 left-0 w-full h-full flex flex-col justify-start items-center overflow-hidden pointer-events-none z-0 pt-16 md:pt-12 opacity-10"
       >
-        <h1 
+        <h1
           className="text-[25vw] leading-[0.75] font-black text-red-600 uppercase tracking-tighter select-none scale-y-[1.6] origin-top"
           style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
         >
@@ -66,7 +86,7 @@ const Contact = () => {
 
       {/* Form Card Overlay */}
       <div className="relative z-10 w-full flex justify-end items-end">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -88,38 +108,41 @@ const Contact = () => {
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-12 md:gap-16 w-full">
             <div className="flex flex-col md:flex-row gap-12 md:gap-20 w-full">
-              
+
               {/* Left Column */}
               <div className="flex-1 flex flex-col gap-10">
                 <div className="relative">
-                  <input 
-                    type="text" 
-                    id="firstName" 
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    placeholder="First Name" 
+                    placeholder="First Name"
                     required
                     className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
                 </div>
                 <div className="relative">
-                  <input 
-                    type="text" 
-                    id="lastName" 
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    placeholder="Last Name" 
+                    placeholder="Last Name"
                     required
                     className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
                 </div>
                 <div className="relative">
-                  <input 
-                    type="email" 
-                    id="email" 
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Email Address" 
+                    placeholder="Email Address"
                     required
                     className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
@@ -129,11 +152,12 @@ const Contact = () => {
               {/* Right Column */}
               <div className="flex-1 flex flex-col">
                 <div className="relative h-full flex flex-col">
-                  <textarea 
-                    id="message" 
+                  <textarea
+                    id="message"
+                    name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Type your message here..." 
+                    placeholder="Type your message here..."
                     required
                     className="w-full h-full min-h-[140px] bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium resize-none rounded-none text-white"
                   ></textarea>
@@ -145,12 +169,13 @@ const Contact = () => {
             <div className="flex flex-col md:flex-row gap-12 mt-4 pt-6 border-t border-white/10">
               {/* Left text */}
               <div className="flex-1 flex items-start gap-4 text-sm font-light text-white/70">
-                <input 
-                  type="checkbox" 
-                  id="permission" 
+                <input
+                  type="checkbox"
+                  id="permission"
+                  name="permission"
                   checked={formData.permission}
                   onChange={handleChange}
-                  className="mt-1 w-4 h-4 rounded-sm border-white/30 bg-transparent text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer" 
+                  className="mt-1 w-4 h-4 rounded-sm border-white/30 bg-transparent text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer"
                   style={{ accentColor: "#E50914" }}
                 />
                 <label htmlFor="permission" className="cursor-pointer max-w-[280px] leading-snug">
@@ -167,17 +192,24 @@ const Contact = () => {
                   <p className="max-w-[250px] leading-relaxed">
                     Ready to start a project or collaboration? Send a direct signal.
                   </p>
-                  
-                  <button 
-                    type="submit" 
-                    className="px-8 py-3.5 rounded bg-red-600 text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-red-700 transition-all duration-300 group whitespace-nowrap shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105"
+
+                  <button
+                    type="submit"
+                    disabled={status === 'sending'}
+                    className="px-8 py-3.5 rounded bg-red-600 text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-red-700 transition-all duration-300 group whitespace-nowrap shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105 disabled:opacity-60 disabled:hover:scale-100"
                   >
-                    Send Message
+                    {status === 'sending' ? 'Sending...' : 'Send Message'}
                     <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
                   </button>
                 </div>
+                {status === 'sent' && (
+                  <p className="text-green-400 text-xs">Message sent — thanks, I'll get back to you soon.</p>
+                )}
+                {status === 'error' && (
+                  <p className="text-red-400 text-xs">Something went wrong. Please try again, or email directly.</p>
+                )}
               </div>
             </div>
           </form>

@@ -1,226 +1,112 @@
-import { useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
 const skillCategories = [
-  { 
-    title: 'Frontend Engineering', 
-    desc: 'Crafting responsive and interactive user interfaces using React, JavaScript, HTML5, CSS3, and Tailwind CSS.', 
-    tag: 'UI / INTERACTION',
-    skills: ['React', 'JavaScript', 'Tailwind CSS', 'HTML5', 'CSS3'] 
-  },
-  { 
-    title: 'Backend & Databases', 
-    desc: 'Building secure REST APIs, authentication flows, server-side applications, and high-performance database architectures.', 
-    tag: 'ARCHITECTURE',
-    skills: ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'DQL'] 
-  },
-  { 
-    title: 'AI & Machine Learning', 
-    desc: 'Developing intelligent applications leveraging NLP, generative AI workflows, computer vision, and LLM systems.', 
+  {
+    title: 'Generative AI & Python',
+    desc: 'Building LLM-powered tools with the OpenAI API — prompt design, iterative refinement, and real-time AI applications.',
     tag: 'INTELLIGENCE',
-    skills: ['NLP', 'Generative AI', 'Computer Vision', 'LLMs', 'AWS AI'] 
+    skills: ['Python', 'Generative AI', 'OpenAI API', 'Prompt Engineering', 'NLP Basics'],
   },
-  { 
-    title: 'Cloud & DevOps', 
-    desc: 'Deploying and scaling production-grade applications using Docker containers, GitHub Actions, and CI/CD pipelines.', 
-    tag: 'INFRASTRUCTURE',
-    skills: ['Docker', 'GitHub', 'CI/CD Pipelines', 'Render', 'Docker Hub'] 
+  {
+    title: 'Web Technologies',
+    desc: 'Structuring and styling clean, responsive interfaces for web-based projects and dashboards.',
+    tag: 'UI / INTERACTION',
+    skills: ['HTML', 'CSS'],
   },
-  { 
-    title: 'Algorithmic Problem Solving', 
-    desc: 'Optimizing data structures and solving complex algorithmic challenges across competitive programming platforms.', 
-    tag: 'COMPETITIVE',
-    skills: ['Data Structures', 'Algorithms', 'LeetCode', 'CodeChef', 'GFG'] 
+  {
+    title: 'Databases',
+    desc: 'Designing tables and writing queries to store, retrieve, and manage structured data.',
+    tag: 'DATA',
+    skills: ['SQL'],
   },
-  { 
-    title: 'Tools & Ecosystem', 
-    desc: 'Equipped with industry-grade instruments for version control, productivity extensions, and workflow management.', 
-    tag: 'PRODUCTIVITY',
-    skills: ['Git', 'Chrome APIs', 'Adobe Express', 'Google Cloud', 'VS Code'] 
+  {
+    title: 'Core Competencies',
+    desc: 'The connective skills behind every project — integrating APIs, handling data, and shipping with version control.',
+    tag: 'ECOSYSTEM',
+    skills: ['API Integration', 'Data Handling', 'Problem Solving', 'Git/GitHub'],
   },
 ];
 
 const Skills = () => {
-  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
   const cardsRef = useRef([]);
-  const bgRefs = useRef([]);
-  const textRefs = useRef([]);
+  const [activeIdx, setActiveIdx] = useState(0);
 
   const handleScroll = (e) => {
-    if (window.innerWidth >= 769) return;
     const container = e.target;
     const center = container.scrollLeft + container.offsetWidth / 2;
-    
-    let activeIdx = 0;
+
+    let idx = 0;
     let minDiff = Infinity;
-    
     cardsRef.current.forEach((card, i) => {
       if (!card) return;
       const cardCenter = card.offsetLeft + card.offsetWidth / 2;
       const diff = Math.abs(cardCenter - center);
       if (diff < minDiff) {
         minDiff = diff;
-        activeIdx = i;
+        idx = i;
       }
     });
-
-    cardsRef.current.forEach((card, i) => {
-      if (card) {
-        gsap.to(card, { scale: i === activeIdx ? 1 : 0.9, duration: 0.4, ease: "power2.out", overwrite: "auto" });
-      }
-    });
-
-    bgRefs.current.forEach((bg, i) => {
-      if (bg) gsap.to(bg, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, overwrite: "auto" });
-    });
-    
-    textRefs.current.forEach((txt, i) => {
-      if (txt) gsap.to(txt, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, overwrite: "auto" });
-    });
+    if (idx !== activeIdx) setActiveIdx(idx);
   };
 
-  useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
-      let mm = gsap.matchMedia();
-
-      mm.add("(min-width: 769px)", () => {
-        const updateCards = (p) => {
-          cardsRef.current.forEach((card, i) => {
-            if (!card) return;
-            const offset = i - p;
-            
-            const radius = 1800; 
-            const angleSpread = 18; 
-            
-            const angle = offset * angleSpread;
-            const rad = angle * Math.PI / 180;
-            
-            const x = Math.sin(rad) * radius;
-            const y = radius - (Math.cos(rad) * radius); 
-            const z = -Math.abs(offset) * 50; 
-            
-            const scale = Math.max(0.4, 1 - Math.abs(offset) * 0.15);
-            const rotateZ = angle; 
-            
-            const opacity = Math.max(0.1, 1 - Math.abs(offset) * 0.3);
-            const zIndex = Math.round(100 - Math.abs(offset) * 10);
-
-            gsap.set(card, {
-              x: x,
-              y: y,
-              z: z,
-              scale: scale,
-              rotationZ: rotateZ,
-              rotationY: 0, 
-              opacity: opacity,
-              zIndex: zIndex,
-            });
-          });
-
-          bgRefs.current.forEach((bg, i) => {
-              if (!bg) return;
-              const itemOpacity = Math.max(0, 1 - Math.abs(i - p));
-              gsap.set(bg, { opacity: itemOpacity });
-              
-              if (textRefs.current[i]) {
-                  gsap.set(textRefs.current[i], { opacity: itemOpacity });
-              }
-          });
-        };
-
-        updateCards(0);
-
-        ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "+=500%", 
-          pin: true,
-          scrub: 1,
-          onUpdate: (self) => {
-            const p = self.progress * (skillCategories.length - 1);
-            updateCards(p);
-          }
-        });
-      });
-
-      mm.add("(max-width: 768px)", () => {
-        cardsRef.current.forEach((card, i) => {
-           if (card) {
-             gsap.set(card, { clearProps: "x,y,z,rotation,scale,opacity,position" });
-             gsap.set(card, { scale: i === 0 ? 1 : 0.9 });
-           }
-        });
-        
-        bgRefs.current.forEach((bg, i) => {
-           if (bg) gsap.set(bg, { clearProps: "all", opacity: i === 0 ? 1 : 0 });
-        });
-        
-        textRefs.current.forEach((txt, i) => {
-           if (txt) gsap.set(txt, { clearProps: "all", opacity: i === 0 ? 1 : 0 });
-        });
-      });
-
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section 
+    <section
       id="skills"
-      ref={sectionRef} 
-      className="relative w-full h-screen bg-[#0b0b0b] text-white overflow-hidden flex items-center justify-center md:[perspective:1000px] select-none"
+      className="relative w-full min-h-screen bg-[#0b0b0b] text-white overflow-hidden flex flex-col items-center justify-center select-none py-24"
     >
-      {/* Dynamic Netflix Dark Background Vignettes */}
+      {/* Background vignette tied to the active card */}
       {skillCategories.map((_, i) => (
-        <div 
+        <motion.div
           key={i}
-          ref={el => bgRefs.current[i] = el}
-          className="absolute inset-0 z-0 pointer-events-none opacity-0 bg-gradient-to-tr from-black via-[#140203] to-black"
+          animate={{ opacity: i === activeIdx ? 1 : 0 }}
+          transition={{ duration: 0.4 }}
+          className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-tr from-black via-[#140203] to-black"
         />
       ))}
 
-      {/* Massive Background Typography (Netflix Red & White Outline) */}
+      {/* Massive background typography */}
       <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
-        {skillCategories.map((_, i) => (
-          <h1 
-            key={`text-${i}`}
-            ref={el => textRefs.current[i] = el}
-            className="absolute text-[22vw] md:text-[18vw] font-black uppercase text-transparent leading-none tracking-tighter mix-blend-overlay"
-            style={{ 
-               WebkitTextStroke: `2px ${i % 2 === 0 ? 'rgba(229,9,20,0.3)' : 'rgba(255,255,255,0.15)'}`,
-               opacity: 0 
-            }}
-          >
-            SKILLS
-          </h1>
-        ))}
+        <h1
+          className="text-[22vw] md:text-[18vw] font-black uppercase text-transparent leading-none tracking-tighter"
+          style={{ WebkitTextStroke: '2px rgba(229,9,20,0.15)' }}
+        >
+          SKILLS
+        </h1>
       </div>
 
+      <p className="relative z-10 mb-8 font-mono text-xs uppercase tracking-widest text-white/40">
+        Scroll to browse
+      </p>
+
       {/* Carousel Container */}
-      <div 
-        className="relative w-full h-full flex md:items-center md:justify-center z-10 md:[transform-style:preserve-3d] overflow-x-auto overflow-y-hidden md:overflow-visible snap-x snap-mandatory scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] items-center px-[10vw] md:px-0 gap-4 md:gap-0 touch-pan-x"
+      <div
+        ref={containerRef}
         onScroll={handleScroll}
+        className="relative w-full flex items-center z-10 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-[9vw] md:px-[20vw] gap-6 touch-pan-x"
       >
         {skillCategories.map((category, i) => (
-          <div 
+          <motion.div
             key={i}
-            ref={el => cardsRef.current[i] = el}
-            className="md:absolute relative shrink-0 snap-center w-[82vw] sm:w-[360px] md:w-[440px] h-[460px] md:h-[540px] rounded-[32px] p-8 md:p-10 bg-[#141414]/95 backdrop-blur-2xl border border-white/15 flex flex-col justify-between overflow-hidden group shadow-[0_30px_60px_rgba(0,0,0,0.9)] hover:border-red-600/80 transition-colors duration-500"
+            ref={(el) => (cardsRef.current[i] = el)}
+            animate={{
+              scale: i === activeIdx ? 1 : 0.9,
+              opacity: i === activeIdx ? 1 : 0.5,
+            }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="shrink-0 snap-center w-[82vw] sm:w-[360px] md:w-[440px] h-[460px] md:h-[480px] rounded-[32px] p-8 md:p-10 bg-[#141414]/95 backdrop-blur-2xl border border-white/15 flex flex-col justify-between overflow-hidden group shadow-[0_30px_60px_rgba(0,0,0,0.9)] hover:border-red-600/80 transition-colors duration-500"
           >
             {/* Inner Red Glossy Reflection */}
             <div className="absolute inset-0 bg-gradient-to-tr from-red-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20" />
-            
+
             {/* Top Card Metadata */}
             <div className="flex items-center justify-between relative z-10">
               <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-red-500 bg-red-600/10 px-3 py-1 rounded border border-red-600/20">
                 {category.tag}
               </span>
               <span className="text-xs font-mono text-white/40">
-                [ 0{i + 1} / 06 ]
+                [ 0{i + 1} / 0{skillCategories.length} ]
               </span>
             </div>
 
@@ -237,7 +123,7 @@ const Skills = () => {
             {/* Bottom Skill Badges */}
             <div className="flex flex-wrap gap-2 pt-4 border-t border-white/10 relative z-10">
               {category.skills.map((skill, sIdx) => (
-                <span 
+                <span
                   key={sIdx}
                   className="text-xs font-mono text-white/80 bg-white/5 border border-white/10 px-3 py-1 rounded group-hover:border-red-600/30 transition-colors"
                 >
@@ -248,10 +134,21 @@ const Skills = () => {
 
             {/* Bottom Glow Accent */}
             <div className="absolute bottom-4 right-4 w-2 h-2 rounded-full bg-red-600 group-hover:shadow-[0_0_15px_#E50914] transition-all" />
-          </div>
+          </motion.div>
         ))}
       </div>
 
+      {/* Dot indicators */}
+      <div className="relative z-10 flex items-center gap-2 mt-8">
+        {skillCategories.map((_, i) => (
+          <div
+            key={i}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === activeIdx ? 'w-6 bg-red-600' : 'w-1.5 bg-white/20'
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 };
