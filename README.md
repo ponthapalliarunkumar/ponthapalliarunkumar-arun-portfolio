@@ -26,7 +26,6 @@ This portfolio showcases my:
 - AI/ML applications
 - Web development projects
 - Cybersecurity projects
-- Data analysis projects
 - Academic projects
 - Technical skills and experience
 
